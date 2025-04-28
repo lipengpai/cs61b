@@ -51,7 +51,52 @@ public class PreconditionTest {
                 .that(nodeClass.getTypeParameters()).isEmpty();
 
         // Convoluted check that value field of node is actually generic instead of Object
-        LinkedListDeque61B<Integer> lld = new LinkedListDeque61B<>();
+        LinkedListDeque61B<Integer> lld = new LinkedListDeque61B<>() {
+            @Override
+            public void addFirst(Integer x) {
+
+            }
+
+            @Override
+            public void addLast(Integer x) {
+
+            }
+
+            @Override
+            public List<Integer> toList() {
+                return List.of();
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return false;
+            }
+
+            @Override
+            public int size() {
+                return 0;
+            }
+
+            @Override
+            public Integer removeFirst() {
+                return 0;
+            }
+
+            @Override
+            public Integer removeLast() {
+                return 0;
+            }
+
+            @Override
+            public Integer get(int index) {
+                return 0;
+            }
+
+            @Override
+            public Integer getRecursive(int index) {
+                return 0;
+            }
+        };
         Field[] fields = lld.getClass().getDeclaredFields();
         for (Field f : fields) {
             if (f.getType().equals(nodeClass)) {
