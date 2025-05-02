@@ -22,11 +22,14 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
             size++;
         }
        else{
+           int origincapacity=capacity;
            capacity*=2;
            T[] newarray=(T[]) new Object[capacity];
            for(int i=0;i<size;i++){
-               newarray[i]=array[i];
+               newarray[i]=array[(i+first)%origincapacity];
            }
+            first=0;
+            last=size;
             first = Math.floorMod(first - 1, capacity);
             newarray[first] = x;
             array=newarray;
@@ -41,10 +44,11 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
              size++;
          }
          else{
+             int origincapacity=capacity;
              capacity*=2;
              T[] newarray=(T[]) new Object[capacity];
              for(int i=0;i<size;i++){
-                 newarray[i]=array[i];
+                 newarray[i]=array[(i+first)%origincapacity];
              }
              newarray[size] = x;
              first = 0;
@@ -79,14 +83,61 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public T removeFirst() {
-        return null;
-    }
+        if (size == 0) {
+            return null;
+        }
 
+        // 如果需要缩小容量
+        if (capacity > 15 && 4 * size <= capacity) {
+            int origincapacity=capacity;
+            capacity /= 2;
+            T[] newarray = (T[]) new Object[capacity];
+
+            // 复制元素
+            for (int i = 0; i < size; i++) {
+                newarray[i] = array[(first + i) % origincapacity];
+            }
+
+            // 更新数组和索引
+            array = newarray;
+            first = 0; // 重置 first 为 0，因为新数组从头开始
+        }
+
+        // 移除第一个元素
+        T value = array[first];
+        array[first] = null; // 清空移除的元素
+
+        // 更新 first 和 size
+        first = (first + 1) % capacity; // 更新 first 索引
+        size--; // 更新队列大小
+
+        return value;
+    }
     @Override
     public T removeLast() {
-        return null;
-    }
+        if (size == 0) {
+            return null;
+        }
+        if (capacity > 15 && 4 * size <= capacity) {
+            int origincapacity=capacity;
+            capacity /= 2;
+            T[] newarray = (T[]) new Object[capacity];
 
+            // 复制元素
+            for (int i = 0; i < size; i++) {
+                newarray[i] = array[(first + i) % origincapacity];
+            }
+
+            // 更新数组和索引
+            array = newarray;
+            last=size;
+        }
+            last = Math.floorMod(last - 1, capacity);
+            T value = array[last];
+            array[last] = null;
+            size--;
+            return value;
+    }
     @Override
     public T get(int index) {
         if(index<0 || index>=size){
@@ -99,6 +150,6 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
     @Override
     public T getRecursive(int index) {
-        return null;
+        throw new UnsupportedOperationException("No need to implement getRecursive for proj 1b");
     }
 }
