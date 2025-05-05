@@ -1,5 +1,7 @@
 package deque;
 
+import org.antlr.v4.runtime.misc.NotNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.function.Consumer;
 public class LinkedListDeque61B<T> implements Deque61B<T> {
 
     public Node sentinel;
-    public static int size;
+    public int size;
 
     @Override
     public Iterator<T> iterator() {
@@ -39,7 +41,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         }
         @Override
         public boolean hasNext() {
-              if(point.next==null){
+              if(point==sentinel){
                   return false;
               }
               return true;
