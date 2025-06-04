@@ -50,6 +50,14 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @param node
      */
     void flipColors(RBTreeNode<T> node) {
+        if(!node.left.isBlack && !node.right.isBlack){
+            node.left.isBlack=true;
+            node.right.isBlack=true;
+            node.isBlack=false;
+        }
+        if(node==root){
+            node.isBlack=true;
+        }
         // TODO: YOUR CODE HERE
     }
 
@@ -62,9 +70,15 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
         // TODO: YOUR CODE HERE
-        return null;
+            assert (node != null) && isRed(node.left);
+            RBTreeNode<T> leftChild = node.left;
+            node.left = leftChild.right;
+            leftChild.right = node;
+            boolean temp = node.isBlack;
+            node.isBlack = leftChild.isBlack;
+            leftChild.isBlack = temp;
+            return leftChild;
     }
-
     /**
      * Rotates the given node to the left. Returns the new root node of
      * this subtree. For this implementation, make sure to swap the colors
@@ -74,9 +88,15 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     RBTreeNode<T> rotateLeft(RBTreeNode<T> node) {
         // TODO: YOUR CODE HERE
-        return null;
+            assert(node != null && isRed(node.right));
+            RBTreeNode<T> rightChild = node.right;
+            node.right = rightChild.left;
+            rightChild.left = node;
+            boolean temp = node.isBlack;
+            node.isBlack = rightChild.isBlack;
+            rightChild.isBlack = temp;
+            return rightChild;
     }
-
     /**
      * Helper method that returns whether the given node is red. Null nodes (children or leaf
      * nodes) are automatically considered black.
@@ -106,16 +126,31 @@ public class RedBlackTree<T extends Comparable<T>> {
      */
     private RBTreeNode<T> insert(RBTreeNode<T> node, T item) {
         // TODO: Insert (return) new red leaf node.
-
+           RBTreeNode<T> newnode = new RBTreeNode<>(false,item,null,null);
         // TODO: Handle normal binary search tree insertion.
-
+           if(node==null){
+               return newnode;
+           }
+           int cmp = item.compareTo(node.item);
+           if(cmp>0){
+              node.right=insert(node.right,item);
+           }
+           else if(cmp<0){
+               node.left=insert(node.left,item);
+           }
         // TODO: Rotate left operation
-
+           if(isRed(node.right) && !isRed(node.left)){
+               node=rotateLeft(node);
+           }
         // TODO: Rotate right operation
-
+           if(isRed(node.left) && isRed(node.left.left)){
+               node=rotateRight(node);
+           }
         // TODO: Color flip
-
-        return null; //fix this return statement
+            if(isRed(node.left) && isRed(node.right)){
+                flipColors(node);
+            }
+            return node; //fix this return statement
     }
 
 }
