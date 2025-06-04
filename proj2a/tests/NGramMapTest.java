@@ -72,5 +72,15 @@ public class NGramMapTest {
         double expectedFishPlusDogWeight1865 = (136497.0 + 75819.0) / 2563919231.0;
         assertThat(fishPlusDogWeight.get(1865)).isWithin(1E-10).of(expectedFishPlusDogWeight1865);
     }
-
+    @Test
+    public void testSummedWeightHistory(){
+        NGramMap ngm = new NGramMap(SHORT_WORDS_FILE,
+                TOTAL_COUNTS_FILE);
+        List<String> airport = new ArrayList<>();
+        airport.add("airport");
+        airport.add("request");
+        TimeSeries airportAndRequestWeight=ngm.summedWeightHistory(airport,2007,2008);
+        double exceptedWeightSum=(175702.0 + 697645) / 28307904288.0;
+        assertThat(airportAndRequestWeight.get(2007)).isWithin(1E-10).of(exceptedWeightSum);
+    }
 }  

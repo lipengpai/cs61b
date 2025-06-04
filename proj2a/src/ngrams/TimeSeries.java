@@ -1,5 +1,7 @@
 package ngrams;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -31,6 +33,11 @@ public class TimeSeries extends TreeMap<Integer, Double> {
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
         // TODO: Fill in this constructor.
+        for (int year : ts.keySet()) {
+            if (year >= startYear && year <= endYear) {
+                this.put(year, ts.get(year));
+            }
+        }
     }
 
     /**
@@ -38,7 +45,14 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public List<Integer> years() {
         // TODO: Fill in this method.
-        return null;
+        List<Integer> res=new ArrayList<>();
+        if(this.keySet().isEmpty()){
+            return res;
+        }
+        for(int year : this.keySet()){
+            res.addLast(year);
+        }
+        return res;
     }
 
     /**
@@ -47,9 +61,15 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public List<Double> data() {
         // TODO: Fill in this method.
-        return null;
+        List<Double> res=new ArrayList<>();
+        if (this.isEmpty()) {
+            return res;
+        }
+        for(double value : this.values()){
+            res.addLast(value);
+        }
+        return res;
     }
-
     /**
      * Returns the year-wise sum of this TimeSeries with the given TS. In other words, for
      * each year, sum the data from this TimeSeries with the data from TS. Should return a
@@ -61,7 +81,24 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries plus(TimeSeries ts) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries newTree=new TimeSeries();
+        if(this.isEmpty() && ts.isEmpty()){
+            return newTree;
+        }
+        for(int year : this.keySet()){
+            if(ts.containsKey(year)){
+                newTree.put(year,this.get(year)+ts.get(year));
+            }
+            else{
+                newTree.put(year,this.get(year));
+            }
+        }
+        for(int year : ts.keySet()){
+            if(!this.containsKey(year)){
+                newTree.put(year,ts.get(year));
+            }
+        }
+        return newTree;
     }
 
     /**
@@ -75,7 +112,17 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries dividedBy(TimeSeries ts) {
         // TODO: Fill in this method.
-        return null;
+        TimeSeries newTree=new TimeSeries();
+        for(int year : this.years()) {
+            if (ts.containsKey(year)) {
+                double res = this.get(year) / ts.get(year);
+                newTree.put(year, res);
+            }
+            else{
+                throw new IllegalArgumentException("无效的年份");
+            }
+        }
+        return newTree;
     }
 
     // TODO: Add any private helper methods.
