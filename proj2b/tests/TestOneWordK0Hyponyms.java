@@ -30,7 +30,16 @@ public class TestOneWordK0Hyponyms {
         String expected = "[act, action, change, demotion, human_action, human_activity, variation]";
         assertThat(actual).isEqualTo(expected);
     }
-
+    @Test
+    public void test02(){
+        NgordnetQueryHandler studentHandler = AutograderBuddy.getHyponymsHandler(
+                WORDS_FILE, TOTAL_COUNTS_FILE, SMALL_SYNSET_FILE, SMALL_HYPONYM_FILE);
+        List<String> words = List.of("transition");
+        NgordnetQuery nq = new NgordnetQuery(words, 0, 0, 0, NgordnetQueryType.HYPONYMS);
+        String actual = studentHandler.handle(nq);
+        String expected = "[flashback, jump, leap, saltation, transition]";
+        assertThat(actual).isEqualTo(expected);
+    }
     // TODO: Add more unit tests (including edge case tests) here.
     
 }

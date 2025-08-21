@@ -1,6 +1,7 @@
 package WordNet;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -21,7 +22,7 @@ public class Graph {
         public String getStrValue() {
             return strValue;
         }
-
+        Comparator<IntStringPair> myComparator = Comparator.comparing(IntStringPair::getStrValue);
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;

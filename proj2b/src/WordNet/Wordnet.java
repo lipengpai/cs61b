@@ -7,7 +7,7 @@ import WordNet.Graph;
 public class Wordnet {
     public Graph my_map;
 
-    public  Wordnet(String File1, String File2) {
+    public Wordnet(String File1, String File2) {
         my_map = new Graph();
         In in1 = new In(File1);
         In in2 = new In(File2);
@@ -41,10 +41,10 @@ public class Wordnet {
         }
     }
 
-    public Set<String> dfs(Graph map, ArrayList<Graph.IntStringPair> starts) {
+    public TreeSet<String> dfs(Graph map, ArrayList<Graph.IntStringPair> starts) {
         Set<Graph.IntStringPair> marked = new HashSet<>();
         Deque<Graph.IntStringPair> fringe = new ArrayDeque<>();
-        Set<String> res = new HashSet<>();
+        TreeSet<String> res = new TreeSet<>();
         for (Graph.IntStringPair start : starts) {
             fringe.push(start);
             while (!fringe.isEmpty()) {
@@ -65,10 +65,11 @@ public class Wordnet {
                 }
             }
         }
+
         return res;
     }
 
-    public Set<String> hyponyms(String word) {
+    public TreeSet<String> hyponyms(String word) {
         ArrayList<Graph.IntStringPair> union = new ArrayList<>();
         for (Graph.IntStringPair pair : my_map.sideMap.keySet()) {
             String[] columns = pair.getStrValue().split(" ");
