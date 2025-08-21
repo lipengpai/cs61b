@@ -1,7 +1,7 @@
 package main;
 
 import browser.NgordnetQueryHandler;
-
+import WordNet.Wordnet;
 
 public class AutograderBuddy {
     /** Returns a HyponymHandler */
@@ -9,6 +9,7 @@ public class AutograderBuddy {
             String wordFile, String countFile,
             String synsetFile, String hyponymFile) {
 
-        throw new RuntimeException("Please fill out AutograderBuddy.java!");
+        Wordnet wn = new Wordnet(synsetFile,hyponymFile);
+        return new HyponymsHandler(wn);
     }
 }

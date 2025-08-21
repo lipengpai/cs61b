@@ -3,8 +3,11 @@ import browser.NgordnetQueryHandler;
 import browser.NgordnetQueryType;
 import org.junit.jupiter.api.Test;
 import main.AutograderBuddy;
+import main.HyponymsHandler;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,4 +32,5 @@ public class TestOneWordK0Hyponyms {
     }
 
     // TODO: Add more unit tests (including edge case tests) here.
+    
 }
