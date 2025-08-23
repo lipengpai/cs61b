@@ -7,6 +7,8 @@ import tileengine.Tileset;
 import utils.FileUtils;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -28,6 +30,7 @@ public class GameOfLife {
 
     /**
      * Initializes our world.
+     *
      * @param seed
      */
     public GameOfLife(long seed) {
@@ -44,6 +47,7 @@ public class GameOfLife {
     /**
      * Constructor for loading in the state of the game from the
      * given filename and initializing it.
+     *
      * @param filename
      */
     public GameOfLife(String filename) {
@@ -56,6 +60,7 @@ public class GameOfLife {
      * Constructor for loading in the state of the game from the
      * given filename and initializing it. For testing purposes only, so
      * do not modify.
+     *
      * @param filename
      */
     public GameOfLife(String filename, boolean test) {
@@ -65,6 +70,7 @@ public class GameOfLife {
     /**
      * Initializes our world without using StdDraw. For testing purposes only,
      * so do not modify.
+     *
      * @param seed
      */
     public GameOfLife(long seed, boolean test) {
@@ -79,6 +85,7 @@ public class GameOfLife {
     /**
      * Initializes our world with a given TETile[][] without using StdDraw.
      * For testing purposes only, so do not modify.
+     *
      * @param tiles
      * @param test
      */
@@ -91,6 +98,7 @@ public class GameOfLife {
 
     /**
      * Flips the matrix along the x-axis.
+     *
      * @param tiles
      * @return
      */
@@ -111,6 +119,7 @@ public class GameOfLife {
 
     /**
      * Transposes the tiles.
+     *
      * @param tiles
      * @return
      */
@@ -175,6 +184,7 @@ public class GameOfLife {
 
     /**
      * Fills the given 2D array of tiles with RANDOM tiles.
+     *
      * @param tiles
      */
     public void fillWithRandomTiles(TETile[][] tiles) {
@@ -189,6 +199,7 @@ public class GameOfLife {
 
     /**
      * Fills the 2D array of tiles with NOTHING tiles.
+     *
      * @param tiles
      */
     public void fillWithNothing(TETile[][] tiles) {
@@ -217,6 +228,7 @@ public class GameOfLife {
 
     /**
      * Returns the current state of the board.
+     *
      * @return
      */
     public TETile[][] returnCurrentState() {
@@ -225,27 +237,74 @@ public class GameOfLife {
 
     /**
      * At each timestep, the transitions will occur based on the following rules:
-     *  1.Any live cell with fewer than two live neighbors dies, as if by underpopulation.
-     *  2.Any live cell with two or three neighbors lives on to the next generation.
-     *  3.Any live cell with more than three neighbors dies, as if by overpopulation,
-     *  4.Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+     * 1.Any live cell with fewer than two live neighbors dies, as if by underpopulation.
+     * 2.Any live cell with two or three neighbors lives on to the next generation.
+     * 3.Any live cell with more than three neighbors dies, as if by overpopulation,
+     * 4.Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+     *
      * @param tiles
      * @return
      */
+    public TETile decision(int n, TETile[][] tiles, int i, int j) {
+
+        if (tiles[i][j].equals(Tileset.CELL)) {
+            if (n < 2) {
+                tiles[i][j] = Tileset.NOTHING;
+            }
+            if (n == 2 || n == 3 && tiles[i][j].equals(Tileset.CELL)) {
+                tiles[i][j] = Tileset.CELL;
+            }
+            if (n > 3) {
+                tiles[i][j] = Tileset.NOTHING;
+            }
+            if (n == 3 && tiles[i][j].equals(Tileset.NOTHING)) {
+                tiles[i][j] = Tileset.CELL;
+            }
+        }
+        return tiles[i][j];
+    }
+
+    public int[][] edges(TETile[][] tiles) {
+        int[][] res = new int[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int cnt = 0;
+                for (int i1 = i - 1; i1 <= i + 1; i1++) {
+                    for (int j1 = j - 1; j1 <= j + 1; j1++) {
+                        if (i1 >= 0 && i1 <= width - 1 && j1 >= 0 && j1 <= height - 1) {
+                            if (!(i1 == i && j1 == j)) {
+                                if (tiles[i1][j1].equals((Tileset.CELL))) {
+                                    cnt++;
+                                }
+                            }
+                        }
+                    }
+                }
+                res[i][j] = cnt;
+            }
+        }
+        return res;
+    }
+
     public TETile[][] nextGeneration(TETile[][] tiles) {
         TETile[][] nextGen = new TETile[width][height];
         // The board is filled with Tileset.NOTHING
         fillWithNothing(nextGen);
+        int[][] res =edges(tiles);
+        for(int i=0;i<width;i++){
+            for(int j=0;j<height;j++){
+                nextGen[i][j] = decision(res[i][j],tiles,i,j);
+            }
+        }
 
-        // TODO: Implement this method so that the described transitions occur.
-        // TODO: The current state is represented by TETiles[][] tiles and the next
-        // TODO: state/evolution should be returned in TETile[][] nextGen.
-
+    // TODO: Implement this method so that the described transitions occur.
+    // TODO: The current state is represented by TETiles[][] tiles and the next
+    // TODO: state/evolution should be returned in TETile[][] nextGen.
 
 
 
         // TODO: Returns the next evolution in TETile[][] nextGen.
-        return null;
+        return nextGen;
     }
 
     /**
@@ -268,9 +327,21 @@ public class GameOfLife {
     public void saveBoard() {
         // TODO: Save the dimensions of the board into the first line of the file.
         // TODO: The width and height should be separated by a space, and end with "\n".
-
-
-
+        //String dim = width + " " + height + "\n";
+        StringBuilder temp = new StringBuilder();
+        temp.append(width).append(" ").append(height).append("\n");
+         for(int j=height-1;j>=0;j--){
+             for(int i=0;i<width;i++){
+                 if(currentState[i][j].equals(Tileset.CELL)){
+                     temp.append("1");
+                 }
+                 else{
+                     temp.append("0");
+                 }
+             }
+             temp.append("\n");
+         }
+        FileUtils.writeFile(SAVE_FILE,temp.toString());
         // TODO: Save the current state of the board into save.txt. You should
         // TODO: use the provided FileUtils functions to help you. Make sure
         // TODO: the orientation is correct! Each line in the board should
@@ -300,12 +371,24 @@ public class GameOfLife {
         // TODO: Load the state of the board from the given filename. You can
         // TODO: use the provided builder variable to help you and FileUtils
         // TODO: functions. Make sure the orientation is correct!
-
-
-
-
+          String read =FileUtils.readFile(filename);
+          String[] columns = read.split("\n");
+          String[] temp = columns[0].split(" ");
+          this.width =Integer.parseInt(temp[0]);
+          this.height = Integer.parseInt(temp[1]);
+          TETile[][] board = new TETile[height][width];
+          for(int j=0;j<height;j++){
+              for(int i=0;i<width;i++){
+                  if(columns[j+1].charAt(i)=='1'){
+                      board[i][j]=Tileset.CELL;
+                  }
+                  else{
+                      board[i][j]=Tileset.NOTHING;
+                  }
+              }
+          }
         // TODO: Return the board you loaded. Replace/delete this line.
-        return null;
+        return board;
     }
 
     /**
