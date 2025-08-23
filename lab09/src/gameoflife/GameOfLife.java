@@ -246,8 +246,8 @@ public class GameOfLife {
      * @return
      */
     public TETile decision(int n, TETile[][] tiles, int i, int j) {
-
-        if (tiles[i][j].equals(Tileset.CELL)) {
+        TETile current = tiles[i][j];
+        /*if (tiles[i][j].equals(Tileset.CELL)) {
             if (n < 2) {
                 tiles[i][j] = Tileset.NOTHING;
             }
@@ -261,7 +261,24 @@ public class GameOfLife {
                 tiles[i][j] = Tileset.CELL;
             }
         }
-        return tiles[i][j];
+        return tiles[i][j];*/
+        // 处理活细胞（CELL）的情况
+        if (current.equals(Tileset.CELL)) {
+            if (n < 2 || n > 3) {  // 少于2个或多于3个邻居，死亡
+                return Tileset.NOTHING;
+            } else {  // n==2或3，存活
+                return Tileset.CELL;
+            }
+        }
+        // 处理死细胞（NOTHING）的情况
+        else if (current.equals(Tileset.NOTHING)) {
+            if (n == 3) {  // 恰好3个邻居，复活
+                return Tileset.CELL;
+            } else {  // 否则保持死亡
+                return Tileset.NOTHING;
+            }
+        }
+        return current;
     }
 
     public int[][] edges(TETile[][] tiles) {
